@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sheeba_sample/view_model/view_model.dart';
 import 'package:sheeba_sample/views/entry_pages/entry_page.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +12,8 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final ViewModel viewModel = ViewModel();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff8eff77)),
         useMaterial3: true,
       ),
-      home: EntryPage(),
+      home: EntryPage(viewModel: viewModel),
     );
   }
 }

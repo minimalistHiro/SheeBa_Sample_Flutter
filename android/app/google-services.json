@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1077286598533",
+    "project_id": "sheebasample-fbbb2",
+    "storage_bucket": "sheebasample-fbbb2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077286598533:android:19a1a90cf2983b9a9936ec",
+        "android_client_info": {
+          "package_name": "com.hiroki.sheeba_sample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtBnbztVyNH7EBGRZLZ1BgVFNldOw0cLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

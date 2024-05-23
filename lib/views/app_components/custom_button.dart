@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final Widget? nextPage;
-  const CustomButton({super.key, required this.text, this.nextPage});
+  final VoidCallback? buttonTap;
+
+  const CustomButton({
+    super.key,
+    required this.text,
+    required this.buttonTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +19,7 @@ class CustomButton extends StatelessWidget {
         foregroundColor: Colors.white, backgroundColor: Colors.black,
         shape: const StadiumBorder(),
       ),
-      onPressed: () {
-        if (nextPage != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => nextPage!,
-            ),
-          );
-        }
-      },
+      onPressed: buttonTap,
       child: Text(text,
         style: const TextStyle(
           fontWeight: FontWeight.bold,

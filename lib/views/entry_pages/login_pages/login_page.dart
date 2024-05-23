@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sheeba_sample/Util/setting.dart';
 import 'package:sheeba_sample/views/app_components/components.dart';
 import 'package:sheeba_sample/views/app_components/custom_button.dart';
+import 'package:sheeba_sample/views/bottom_tab%20_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Setting().sheebaYellow,
       appBar: AppBar(
         backgroundColor: Setting().sheebaYellow,
-        title: AppBarText(text: 'ログイン')
+        title: ComAppBarText(text: 'ログイン')
       ),
       body: Center(
         child: Padding(
@@ -59,9 +60,18 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const Spacer(),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(bottom: 20),
-                child: CustomButton(text: '次へ'),
+                child: CustomButton(text: '次へ',
+                  buttonTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BottomTabPage(),
+                      ),
+                    );
+                  },
+                )
               ),
               const Spacer(),
               const Spacer(),

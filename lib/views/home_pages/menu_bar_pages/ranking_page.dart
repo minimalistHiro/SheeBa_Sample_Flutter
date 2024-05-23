@@ -7,7 +7,7 @@ class RankingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AppBarText(text: 'ランキング'),
+        title: ComAppBarText(text: 'ランキング'),
       ),
       body: Center(child: Text('RankingPage')),
     );

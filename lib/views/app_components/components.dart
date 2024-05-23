@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AppBarText extends StatelessWidget {
+class ComAppBarText extends StatelessWidget {
   final String text;
-  const AppBarText({super.key, required this.text});
+  const ComAppBarText({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +11,18 @@ class AppBarText extends StatelessWidget {
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 18,
+      ),
+    );
+  }
+}
+
+class ComProgressIndicator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black38,
+      child: const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

@@ -7,7 +7,7 @@ class StoreGetPointPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AppBarText(text: '本日の獲得ポイント一覧'),
+        title: ComAppBarText(text: '本日の獲得ポイント一覧'),
       ),
       body: Center(child: Text('StoreGetPointPage')),
     );

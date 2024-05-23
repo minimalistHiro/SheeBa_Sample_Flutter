@@ -2,9 +2,22 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomIcon extends StatelessWidget {
+class CustomIcon extends StatefulWidget {
   final File? imageFile;
-  const CustomIcon({super.key, this.imageFile});
+  const CustomIcon({super.key, required this.imageFile});
+
+  @override
+  State<CustomIcon> createState() => _CustomIconState();
+}
+
+class _CustomIconState extends State<CustomIcon> {
+  late final File? imageFile;
+
+  @override
+  void initState() {
+    super.initState();
+    imageFile = widget.imageFile;
+  }
 
   @override
   Widget build(BuildContext context) {
