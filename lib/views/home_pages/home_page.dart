@@ -1,50 +1,77 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sheeba_sample/Util/setting.dart';
+import 'package:sheeba_sample/util/util.dart';
 import 'package:sheeba_sample/views/home_pages/app_bar_pages/notification_list_page.dart';
 import 'package:sheeba_sample/views/home_pages/menu_bar_pages/money_transfer_page.dart';
 import 'package:sheeba_sample/views/home_pages/menu_bar_pages/qr_code_page.dart';
 import 'package:sheeba_sample/views/home_pages/menu_bar_pages/ranking_page.dart';
 import 'package:sheeba_sample/views/home_pages/menu_bar_pages/store_get_point_page.dart';
+import '../../util/firebase_constants.dart';
+import '../../view_model/view_model.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  final ViewModel viewModel;
+  const HomePage({super.key, required this.viewModel});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          'images/cleartitle.png',
-          width: 150,
-        ),
-        actions: [
-          IconButton(onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NotificationListPage(),
-              ),
-            );
-          },
-              icon: Icon(Icons.notifications)),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // カードView
-            CardView(),
-            MenuButtonsView(),
-          ],
-        ),
-      ),
+    return StreamBuilder<DocumentSnapshot>(
+      stream: widget.viewModel.fetchCurrentUser(),
+      builder: (context, snapshot) {
+        // 初期化
+        widget.viewModel.init();
+        
+        return Scaffold(
+          appBar: AppBar(
+            title: Image.asset(
+              'images/cleartitle.png',
+              width: 150,
+            ),
+            actions: [
+              IconButton(onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificationListPage(),
+                  ),
+                );
+              },
+                  icon: Icon(Icons.notifications)),
+            ],
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Card(viewModel: widget.viewModel, snapshot: snapshot,),
+                MenuButtons(viewModel: widget.viewModel,),
+              ],
+            ),
+          ),
+        );
+      }
     );
   }
 }
 
-// カードView
-class CardView extends StatelessWidget {
+// カード
+class Card extends StatefulWidget {
+  final ViewModel viewModel;
+  final AsyncSnapshot<DocumentSnapshot<Object?>> snapshot;
+  const Card({super.key, required this.viewModel, required this.snapshot});
+
+  @override
+  State<Card> createState() => _CardState();
+}
+
+class _CardState extends State<Card> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -56,7 +83,7 @@ class CardView extends StatelessWidget {
             width: 300,
             height: 200,
             decoration: BoxDecoration(
-              color: Setting().sheebaYellow,
+              color: Util().sheebaYellow,
               boxShadow: const [
                 BoxShadow(
                   color: Colors.grey,
@@ -68,10 +95,10 @@ class CardView extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
             ),
           ),
-          const Column(
+          Column(
             children: [
               // 獲得ポイント
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(top: 40.0),
                 child: Text(
                   '獲得ポイント',
@@ -80,20 +107,22 @@ class CardView extends StatelessWidget {
                   ),),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 25.0),
+                padding: const EdgeInsets.only(top: 25.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: 80.0),
-                      child: Text(
-                        '98',
-                        style: TextStyle(
+                      child: widget.snapshot.connectionState == ConnectionState.waiting
+                          ? const CircularProgressIndicator()
+                          : Text(
+                        widget.snapshot.data?.get(FirebaseChatUser().point).toString() ??  Util().defaultChatUser.point.toString(),
+                        style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 35,
                         ),),
                     ),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(left: 10.0),
                       child: Text(
                         'pt',
@@ -105,7 +134,11 @@ class CardView extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 25.0),
                       child: IconButton(
-                          onPressed: null,
+                          onPressed: () {
+                            // setState(() {
+                            //   widget.viewModel.fetchCurrentUser();
+                            // });
+                          },
                           icon: Icon(Icons.replay, color: Colors.black,)),
                     ),
                   ],
@@ -120,7 +153,15 @@ class CardView extends StatelessWidget {
 }
 
 // メニューボタン
-class MenuButtonsView extends StatelessWidget {
+class MenuButtons extends StatefulWidget {
+  final ViewModel viewModel;
+  const MenuButtons({super.key, required this.viewModel});
+
+  @override
+  State<MenuButtons> createState() => _MenuButtonsState();
+}
+
+class _MenuButtonsState extends State<MenuButtons> {
   final double iconSize = 35;
   final double textSize = 11;
   final double padding = 12;
@@ -136,7 +177,7 @@ class MenuButtonsView extends StatelessWidget {
               width: 350,
               height: 80,
               decoration: BoxDecoration(
-                color: Setting().sheebaDarkGreen,
+                color: Util().sheebaDarkGreen,
                 borderRadius: BorderRadius.circular(25.0),
               ),
             ),

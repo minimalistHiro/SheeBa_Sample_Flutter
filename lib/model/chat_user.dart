@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 
-class User {
-  User(this.uid,
-      this.title,
+class ChatUser {
+  ChatUser(this.uid,
       this.email,
       this.profileImageUrl,
-      this.money,
+      this.point,
       this.username,
       this.age,
-      this.addresse,
+      this.address,
       this.isStore,
       this.isOwner,
-      this.os,);
+      this.os,
+      );
 
   String uid;
-  String title;
   String email;
   String profileImageUrl;
-  String money;
+  int point;
   String username;
   String age;
-  String addresse;
-  String isStore;
-  String isOwner;
+  String address;
+  bool isStore;
+  bool isOwner;
   String os;
 }
 

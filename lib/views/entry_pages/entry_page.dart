@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sheeba_sample/Util/setting.dart';
+import 'package:sheeba_sample/util/util.dart';
 import 'package:sheeba_sample/views/app_components/custom_button.dart';
 import 'package:sheeba_sample/views/entry_pages/login_pages/login_page.dart';
 import 'package:sheeba_sample/views/entry_pages/sign_up_pages/set_up_username_page.dart';
@@ -19,7 +19,6 @@ class _EntryPageState extends State<EntryPage> {
 
   @override
   void initState() {
-    print('initState開始');
     super.initState();
     viewModel = widget.viewModel;
     viewModel.init();
@@ -27,8 +26,11 @@ class _EntryPageState extends State<EntryPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 初期化
+    viewModel.init();
+
     return Scaffold(
-      backgroundColor: Setting().sheebaYellow,
+      backgroundColor: Util().sheebaYellow,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -41,10 +43,18 @@ class _EntryPageState extends State<EntryPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: CustomOutlinedButton(text: 'アカウントを作成する',
-                nextPage: SetUpUsernamePage(viewModel: viewModel),
-              ),
+                padding: EdgeInsets.only(bottom: 20),
+                child: CustomOutlinedButton(text: 'アカウントを作成する',
+                    buttonTap: () {
+                      viewModel.init();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SetUpUsernamePage(viewModel: viewModel),
+                        ),
+                      );
+                    }
+                )
             ),
             Padding(
                 padding: EdgeInsets.only(bottom: 20),
@@ -54,10 +64,11 @@ class _EntryPageState extends State<EntryPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginPage(),
+                          builder: (context) => LoginPage(viewModel: viewModel),
                         ),
                       );
-                    })
+                    },
+                )
             ),
           ],
         ),

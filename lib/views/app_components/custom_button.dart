@@ -16,7 +16,8 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(300, 50),
-        foregroundColor: Colors.white, backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.black,
         shape: const StadiumBorder(),
       ),
       onPressed: buttonTap,
@@ -32,8 +33,13 @@ class CustomButton extends StatelessWidget {
 
 class CustomOutlinedButton extends StatelessWidget {
   final String text;
-  final Widget? nextPage;
-  const CustomOutlinedButton({super.key, required this.text, this.nextPage});
+  final VoidCallback? buttonTap;
+
+  const CustomOutlinedButton({
+    super.key,
+    required this.text,
+    required this.buttonTap
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +49,7 @@ class CustomOutlinedButton extends StatelessWidget {
         foregroundColor: Colors.black, shape: const StadiumBorder(),
         side: const BorderSide(color: Colors.black, width: 2.5),
       ),
-      onPressed: () {
-        if (nextPage != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => nextPage!,
-            ),
-          );
-        }
-      },
+      onPressed: buttonTap,
       child: Text(text,
         style: const TextStyle(
           fontWeight: FontWeight.bold,

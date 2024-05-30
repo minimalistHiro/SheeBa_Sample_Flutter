@@ -16,7 +16,9 @@ class ComAppBarText extends StatelessWidget {
   }
 }
 
-class ComProgressIndicator extends StatelessWidget {
+class ComDarkProgressIndicator extends StatelessWidget {
+  const ComDarkProgressIndicator({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,17 +1,23 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:sheeba_sample/model/chat_user.dart';
+import 'package:sheeba_sample/util/firebase_constants.dart';
+import 'package:sheeba_sample/util/util.dart';
 
 class ViewModel {
-  final picker = ImagePicker();
-  bool isLoading = false;
-  File? imageFile;
+  User? currentUser;                // ユーザー認証情報
+  ChatUser? currentChatUser;        // 自身のユーザー情報
+  Stream<DocumentSnapshot>? chatUserStream;
+  File? imageFile;                  // 画像ファイル情報
+  bool isLoading = false;           // リロードの有無
 
   // DB
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   String? email;
   String? password;
   String? username;
@@ -34,94 +40,133 @@ class ViewModel {
 
     isLoading = false;
   }
-  // final emailController = TextEditingController();
-  // final passwordController = TextEditingController();
-  // final usernameController = TextEditingController();
-  // final ageController = TextEditingController();
-  // final addressController = TextEditingController();
-
-  /// Loadingの開始と終了
-  void startLoading() {
-    isLoading = true;
-    // notifyListeners();
-  }
-  void endLoading() {
-    isLoading = false;
-    // notifyListeners();
-  }
-
-  /// 各データのセット
-  // void setEmail(String? email) {
-  //   this.email = email;
-  //   notifyListeners();
-  // }
-  // void setPassword(String? password) {
-  //   this.password = password;
-  //   notifyListeners();
-  // }
-  // void setUsername(String? username) {
-  //   this.username = username;
-  //   notifyListeners();
-  // }
-  // void setProfileImageUrl(String? profileImageUrl) {
-  //   this.profileImageUrl = profileImageUrl;
-  //   notifyListeners();
-  // }
-  // void setAge(String? age) {
-  //   this.age = age;
-  //   notifyListeners();
-  // }
-  // void setAddress(String? address) {
-  //   this.address = address;
-  //   notifyListeners();
-  // }
 
   /// サインアップ
   ///
   /// @param なし
   /// @return なし
   Future<void> signUp() async {
-    print(email);
-    print(password);
-    print(username);
-    print(age);
-    print(address);
-    print(profileImageUrl);
-    // this.email = emailController.text;
-    // this.password = passwordController.text;
-
     // firebase authでユーザー作成
     if (email != null && password != null) {
-      final userCredential = await FirebaseAuth.instance
+      final userCredential = await _auth
           .createUserWithEmailAndPassword(email: email!, password: password!);
-      final user = userCredential.user;
-
-      // FirebaseFirestoreに追加
-      if (user != null) {
-        final uid = user.uid;
-
-        final doc = FirebaseFirestore.instance.collection('users').doc(uid);
-        await doc.set({
-          'uid': uid,
-          'email': email,
-          'profileImageUrl;': profileImageUrl,
-          'age': age,
-          'address': address,
-        });
-      }
+      currentUser = userCredential.user;
     }
   }
 
-  /// ImagePickerを開く
+  /// ログイン
   ///
   /// @param なし
   /// @return なし
-  // Future pickImage() async {
-  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> login() async {
+    if (email != null && password != null) {
+      final userCredential = await _auth
+          .signInWithEmailAndPassword(email: email!, password: password!);
+      currentUser = userCredential.user;
+    }
+  }
+
+  /// ログアウト
+  ///
+  /// @param なし
+  /// @return なし
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  /// UserをDBに保存
+  ///
+  /// @param
+  /// - user ユーザー情報
+  /// @return なし
+  Future<void> persistUser(User user) async {
+    await _firestore.collection(FirebaseChatUser().users).doc(user.uid).set({
+      FirebaseChatUser().uid: user.uid,
+      FirebaseChatUser().email: email,
+      FirebaseChatUser().profileImageUrl: profileImageUrl,
+      FirebaseChatUser().point: Util().regisrationPoint,
+      FirebaseChatUser().username: username,
+      FirebaseChatUser().age: age,
+      FirebaseChatUser().address: address,
+      FirebaseChatUser().isStore: false,
+      FirebaseChatUser().isOwner: false,
+      FirebaseChatUser().os: Util().defaultChatUser.os,
+    });
+  }
+
+  /// 画像をFirebaseStorageに保存
+  ///
+  /// @param
+  /// - doc ドキュメント
+  /// @return なし
+  Future<void> persistImage(User user, bool isPersist) async {
+    final doc = _firestore.collection(FirebaseChatUser().users).doc(user.uid);
+
+    // 画像をFirebaseStorageにアップロード
+    final task = await FirebaseStorage.instance
+        .ref('profile/${doc.id}')
+        .putFile(imageFile!);
+    profileImageUrl = await task.ref.getDownloadURL();
+
+    // 新規会員登録のみ実行
+    if (isPersist) {
+      await persistUser(user);
+    }
+  }
+
+  /// ユーザー情報を取得
+  ///
+  /// @param なし
+  /// @return なし
+  // Future<void> fetchCurrentUser() async {
+  //   final user = _auth.currentUser;
   //
-  //   if (pickedFile != null) {
-  //     profileImageUrl = pickedFile.path;
-  //     imageFile = File(pickedFile.path);
+  //   if (user != null) {
+  //     final docRef = _firestore.collection("users").doc(user.uid);
+  //     await docRef.get().then(
+  //           (DocumentSnapshot doc) {
+  //         final data = doc.data() as Map<String, dynamic>;
+  //         final String uid = doc.id;
+  //         final String email = data[FirebaseChatUser().email];
+  //         final String profileImageUrl = data[FirebaseChatUser().profileImageUrl];
+  //         final int point = data[FirebaseChatUser().point];
+  //         final String username = data[FirebaseChatUser().username];
+  //         final String age = data[FirebaseChatUser().age];
+  //         final String address = data[FirebaseChatUser().address];
+  //         final bool isStore = data[FirebaseChatUser().isStore];
+  //         final bool isOwner = data[FirebaseChatUser().isOwner];
+  //         final String os = data[FirebaseChatUser().os];
+  //         currentChatUser = ChatUser(uid, email, profileImageUrl, point, username, age, address, isStore, isOwner, os);
+  //         // print('fetchCurrentUser -> curretnChatUser: $currentChatUser');
+  //       },
+  //       onError: (e) => print("ユーザー情報取得エラー: $e"),
+  //     );
+  //   } else {
+  //     print("ユーザー情報取得エラー");
   //   }
   // }
+
+  /// ユーザー情報を取得
+  ///
+  /// @param なし
+  /// @return なし
+  Stream<DocumentSnapshot>? fetchCurrentUser() {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final docRef = _firestore.collection(FirebaseChatUser().users).doc(user.uid);
+      return docRef.snapshots();
+    }
+    return null;
+  }
+
+  /// ユーザー情報を更新
+  ///
+  /// @param
+  /// - doc ドキュメント
+  /// - data 更新データ
+  /// @return なし
+  Future<void> updateUser(String doc, Map<String, dynamic> data) async {
+    await _firestore.collection(FirebaseChatUser().users)
+        .doc(doc).update(data);
+  }
 }
