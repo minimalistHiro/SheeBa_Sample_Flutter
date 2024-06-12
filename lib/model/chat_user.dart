@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ChatUser {
-  ChatUser(this.uid,
+  ChatUser(
+      this.uid,
       this.email,
       this.profileImageUrl,
       this.point,

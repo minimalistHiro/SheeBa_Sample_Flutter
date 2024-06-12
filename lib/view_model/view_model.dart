@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:sheeba_sample/model/chat_user.dart';
+import 'package:sheeba_sample/model/notification.dart';
 import 'package:sheeba_sample/util/firebase_constants.dart';
 import 'package:sheeba_sample/util/util.dart';
 
 class ViewModel {
   User? currentUser;                // ユーザー認証情報
-  ChatUser? currentChatUser;        // 自身のユーザー情報
   Stream<DocumentSnapshot>? chatUserStream;
   File? imageFile;                  // 画像ファイル情報
   bool isLoading = false;           // リロードの有無
@@ -71,7 +71,7 @@ class ViewModel {
   /// @param なし
   /// @return なし
   Future<void> logout() async {
-    await FirebaseAuth.instance.signOut();
+    await _auth.signOut();
   }
 
   /// UserをDBに保存
@@ -80,7 +80,10 @@ class ViewModel {
   /// - user ユーザー情報
   /// @return なし
   Future<void> persistUser(User user) async {
-    await _firestore.collection(FirebaseChatUser().users).doc(user.uid).set({
+    await _firestore
+        .collection(FirebaseChatUser().users)
+        .doc(user.uid)
+        .set({
       FirebaseChatUser().uid: user.uid,
       FirebaseChatUser().email: email,
       FirebaseChatUser().profileImageUrl: profileImageUrl,
@@ -90,7 +93,7 @@ class ViewModel {
       FirebaseChatUser().address: address,
       FirebaseChatUser().isStore: false,
       FirebaseChatUser().isOwner: false,
-      FirebaseChatUser().os: Util().defaultChatUser.os,
+      FirebaseChatUser().os: Platform.isAndroid ? 'Android' : 'iOS',
     });
   }
 
@@ -100,10 +103,12 @@ class ViewModel {
   /// - doc ドキュメント
   /// @return なし
   Future<void> persistImage(User user, bool isPersist) async {
-    final doc = _firestore.collection(FirebaseChatUser().users).doc(user.uid);
+    final doc = _firestore
+        .collection(FirebaseChatUser().users)
+        .doc(user.uid);
 
     // 画像をFirebaseStorageにアップロード
-    final task = await FirebaseStorage.instance
+    final task = await _storage
         .ref('profile/${doc.id}')
         .putFile(imageFile!);
     profileImageUrl = await task.ref.getDownloadURL();
@@ -149,12 +154,32 @@ class ViewModel {
   /// ユーザー情報を取得
   ///
   /// @param なし
-  /// @return なし
+  /// @return ユーザー情報
   Stream<DocumentSnapshot>? fetchCurrentUser() {
     final user = _auth.currentUser;
     if (user != null) {
-      final docRef = _firestore.collection(FirebaseChatUser().users).doc(user.uid);
+      final docRef = _firestore
+          .collection(FirebaseChatUser().users)
+          .doc(user.uid);
       return docRef.snapshots();
+    }
+    return null;
+  }
+
+  /// お知らせを取得
+  ///
+  /// @param なし
+  /// @return 全お知らせ
+  Stream<List<NotificationModel>>? fetchNotifications() {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final collectionRef = _firestore
+          .collection(FirebaseNotification().notifications)
+          .doc(user.uid)
+          .collection(FirebaseNotification().notification);
+      final stream = collectionRef.snapshots();
+      return stream.map((snapshot) =>
+          snapshot.docs.map((doc) => NotificationModel.fromMap(doc.data())).toList());
     }
     return null;
   }

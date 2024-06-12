@@ -5,8 +5,10 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sheeba_sample/util/firebase_constants.dart';
 import 'package:sheeba_sample/util/util.dart';
+import 'package:sheeba_sample/views/account_pages/developer_page.dart';
 import 'package:sheeba_sample/views/account_pages/update_profileImage_page.dart';
 import 'package:sheeba_sample/views/account_pages/update_username_page.dart';
+import 'package:sheeba_sample/views/app_components/components.dart';
 import 'package:sheeba_sample/views/app_components/custom_dialog.dart';
 import 'package:sheeba_sample/views/app_components/custom_icon.dart';
 import 'package:sheeba_sample/views/entry_pages/entry_page.dart';
@@ -39,7 +41,7 @@ class _AccountPageState extends State<AccountPage> {
       stream: widget.viewModel.fetchCurrentUser(),
       builder: (context, snapshot) {
         // 初期化
-        widget.viewModel.init();
+        // widget.viewModel.init();
 
         return Scaffold(
           appBar: AppBar(
@@ -95,42 +97,97 @@ class _AccountPageState extends State<AccountPage> {
             ),
             toolbarHeight: 250,
           ),
-          body: ListView(children: [
-            _menuList('ユーザー名を変更', Colors.black, context, () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UpdateUsernamePage(viewModel: widget.viewModel),
-                ),
-              );
-            }),
-            _menuList('公式サイト', Colors.black, context, null),
-            _menuList('プライバシーポリシー', Colors.black, context, null),
-            _menuList('ログアウト', Colors.red, context, () {
-              CustomShowDoubleDialog(context, '', 'ログアウトしますか？', 'ログアウト', Colors.red, () async {
-                setState(() {
-                  widget.viewModel.isLoading = true;
+          body: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: ListView(children: [
+              ComListMenu(title: 'ユーザー名を変更', color: Colors.black, buttonTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UpdateUsernamePage(viewModel: widget.viewModel),
+                  ),
+                );
+              }),
+              const ComListMenu(title: '公式サイト', color: Colors.black, buttonTap: null),
+              const ComListMenu(title: 'プライバシーポリシー', color: Colors.black, buttonTap: null),
+              ComListMenu(title: 'ログアウト', color: Colors.red, buttonTap: () async {
+                CustomShowDoubleDialog(context, '', 'ログアウトしますか？', 'ログアウト', Colors.red, () async {
+                  setState(() {
+                    widget.viewModel.isLoading = true;
+                  });
+                  try {
+                    await widget.viewModel.logout();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => EntryPage(viewModel: widget.viewModel)
+                      ),
+                    );
+                  } catch(e) {
+                    CustomShowSingleDialog(context, '', 'ログアウトに失敗しました。', null);
+                  } finally {
+                    setState(() {
+                      widget.viewModel.isLoading = false;
+                    });
+                  }
                 });
-                try {
-                  await widget.viewModel.logout();
+              }),
+              const ComListMenu(title: '退会する', color: Colors.red, buttonTap: null),
+              if (snapshot.data != null && snapshot.data?.get(FirebaseChatUser().isOwner))
+                ComListMenu(title: 'Developer専用', color: Colors.blue, buttonTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        fullscreenDialog: true,
-                        builder: (context) => EntryPage(viewModel: widget.viewModel)
+                      builder: (context) => DeveloperPage(viewModel: widget.viewModel),
                     ),
                   );
-                } catch(e) {
-                  CustomShowSingleDialog(context, '', 'ログアウトに失敗しました。', null);
-                } finally {
-                  setState(() {
-                    widget.viewModel.isLoading = false;
-                  });
-                }
-              });
-            }),
-            _menuList('退会する', Colors.red, context, null),
-          ],),
+                }),
+              // _menuList('ユーザー名を変更', Colors.black, context, () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => UpdateUsernamePage(viewModel: widget.viewModel),
+              //     ),
+              //   );
+              // }),
+              // _menuList('公式サイト', Colors.black, context, null),
+              // _menuList('プライバシーポリシー', Colors.black, context, null),
+              // _menuList('ログアウト', Colors.red, context, () {
+              //   CustomShowDoubleDialog(context, '', 'ログアウトしますか？', 'ログアウト', Colors.red, () async {
+              //     setState(() {
+              //       widget.viewModel.isLoading = true;
+              //     });
+              //     try {
+              //       await widget.viewModel.logout();
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             fullscreenDialog: true,
+              //             builder: (context) => EntryPage(viewModel: widget.viewModel)
+              //         ),
+              //       );
+              //     } catch(e) {
+              //       CustomShowSingleDialog(context, '', 'ログアウトに失敗しました。', null);
+              //     } finally {
+              //       setState(() {
+              //         widget.viewModel.isLoading = false;
+              //       });
+              //     }
+              //   });
+              // }),
+              // _menuList('退会する', Colors.red, context, null),
+              // if (snapshot.data != null && snapshot.data?.get(FirebaseChatUser().isOwner))
+              // _menuList('Developer専用', Colors.blue, context, () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => UpdateUsernamePage(viewModel: widget.viewModel),
+              //     ),
+              //   );
+              // })
+            ],),
+          ),
         );
       }
     );
@@ -144,22 +201,22 @@ class _AccountPageState extends State<AccountPage> {
   /// - context - コンテキスト
   /// - action - 実行処理
   /// @return Widget
-  Widget _menuList(String title, Color color, BuildContext context, VoidCallback? buttonTap) {
-    return GestureDetector(
-      onTap: buttonTap,
-      child:Container(
-          padding: const EdgeInsets.only(left: 25.0, top: 20.0, bottom: 20.0),
-          decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(width: 1.0, color: Colors.grey))
-          ),
-          child: Text(
-            title,
-            style: TextStyle(
-                color: color,
-                fontSize: 18.0
-            ),
-          ),
-      ),
-    );
-  }
+  // Widget _menuList(String title, Color color, BuildContext context, VoidCallback? buttonTap) {
+  //   return GestureDetector(
+  //     onTap: buttonTap,
+  //     child:Container(
+  //         padding: const EdgeInsets.only(left: 25.0, top: 20.0, bottom: 20.0),
+  //         decoration: const BoxDecoration(
+  //             border: Border(bottom: BorderSide(width: 1.0, color: Colors.grey))
+  //         ),
+  //         child: Text(
+  //           title,
+  //           style: TextStyle(
+  //               color: color,
+  //               fontSize: 18.0
+  //           ),
+  //         ),
+  //     ),
+  //   );
+  // }
 }

@@ -11,3 +11,14 @@ class FirebaseChatUser {
   final String isOwner = 'isOwner';
   final String os = 'os';
 }
+
+class FirebaseNotification {
+  final String notifications = 'notifications';
+  final String notification = 'notification';
+  final String title = 'title';
+  final String text = 'text';
+  final String isRead = 'isRead';
+  final String url = 'url';
+  final String imageUrl = 'imageUrl';
+  final String timestamp = 'timestamp';
+}

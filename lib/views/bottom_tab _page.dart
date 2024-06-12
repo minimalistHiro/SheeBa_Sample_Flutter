@@ -6,7 +6,6 @@ import 'package:sheeba_sample/views/account_pages/account_page.dart';
 import 'package:sheeba_sample/views/home_pages/home_page.dart';
 import 'package:sheeba_sample/views/qr_scan_pages/qr_scan_page.dart';
 import '../view_model/view_model.dart';
-import 'app_components/custom_dialog.dart';
 import 'entry_pages/entry_page.dart';
 
 class BottomTabPage extends StatefulWidget {
@@ -14,7 +13,7 @@ class BottomTabPage extends StatefulWidget {
   const BottomTabPage({super.key, required this.viewModel});
 
   @override
-  State<StatefulWidget> createState() => _BottomTabPageState();
+  State<BottomTabPage> createState() => _BottomTabPageState();
 }
 
 class _BottomTabPageState extends State<BottomTabPage> {
@@ -64,7 +63,7 @@ class _BottomTabPageState extends State<BottomTabPage> {
             case 0:
               return HomePage(viewModel: widget.viewModel);
             case 1:
-              return QRScanPage();
+              return QRScanPage(viewModel: widget.viewModel,);
             default:
               return AccountPage(viewModel: widget.viewModel,);
           }

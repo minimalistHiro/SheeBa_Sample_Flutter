@@ -50,64 +50,42 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Spacer(),
                   // メールアドレス
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
-                    child: TextField(
-                      controller: null,
-                      decoration: const InputDecoration(
-                          hintText: 'メールアドレス'
-                      ),
-                      onChanged: (text) {
-                        setState(() {
-                          widget.viewModel.email = text;
-                        });
-                      },
-                    ),
-                  ),
+                  ComTextField(hintText: 'メールアドレス', onChanged: (text) {
+                    setState(() {
+                      widget.viewModel.email = text;
+                    });
+                  }),
                   // パスワード
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
-                    child: TextFormField(
-                      obscureText: !_isShowPassword,
-                      decoration: InputDecoration(
-                        labelText: 'パスワード',
-                        suffixIcon: IconButton(
-                          icon: Icon(_isShowPassword ? Icons.visibility : Icons.visibility_off),
-                          onPressed: () {
-                            setState(() {
-                              _isShowPassword = !_isShowPassword;
-                            });
-                          },
-                        ),
-                      ),
-                      onChanged: (text) {
-                        setState(() {
-                          widget.viewModel.password = text;
-                        });
-                      },
-                    ),
-                  ),
+                  ComPasswordTextField(hintText: 'パスワード', isShow: _isShowPassword, buttonTap: () {
+                    setState(() {
+                      _isShowPassword = !_isShowPassword;
+                    });
+                  }, onChanged: (text) {
+                    setState(() {
+                      widget.viewModel.password = text;
+                    });
+                  }),
+
                   const Spacer(),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: CustomButton(text: 'ログイン',
-                      buttonTap: !_isCheckButtonEnable() ? null : () async {
+
+                  CustomButton(text: 'ログイン',
+                    buttonTap: !_isCheckButtonEnable() ? null : () async {
+                      setState(() {
+                        widget.viewModel.isLoading = true;
+                      });
+                      try {
+                        await widget.viewModel.login();
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      } catch(e) {
+                        CustomShowSingleDialog(context, '', e.toString(), null);
+                      } finally {
                         setState(() {
-                          widget.viewModel.isLoading = true;
+                          widget.viewModel.isLoading = false;
                         });
-                        try {
-                          await widget.viewModel.login();
-                          Navigator.of(context).popUntil((route) => route.isFirst);
-                        } catch(e) {
-                          CustomShowSingleDialog(context, '', e.toString(), null);
-                        } finally {
-                          setState(() {
-                            widget.viewModel.isLoading = false;
-                          });
-                        }
-                      },
-                    )
+                      }
+                    },
                   ),
+
                   const Spacer(),
                   const Spacer(),
                 ],
@@ -115,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             // インジケーター
             if (widget.viewModel.isLoading)
-              const ComDarkProgressIndicator()
+              const ComDarkProgressIndicator(),
           ],
         ),
       ),

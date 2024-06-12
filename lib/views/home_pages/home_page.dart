@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       stream: widget.viewModel.fetchCurrentUser(),
       builder: (context, snapshot) {
         // 初期化
-        widget.viewModel.init();
+        // widget.viewModel.init();
         
         return Scaffold(
           appBar: AppBar(
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NotificationListPage(),
+                    builder: (context) => NotificationListPage(viewModel: widget.viewModel, snapshot: snapshot,),
                   ),
                 );
               },
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Card(viewModel: widget.viewModel, snapshot: snapshot,),
-                MenuButtons(viewModel: widget.viewModel,),
+                MenuButtons(viewModel: widget.viewModel, snapshot: snapshot,),
               ],
             ),
           ),
@@ -155,7 +155,8 @@ class _CardState extends State<Card> {
 // メニューボタン
 class MenuButtons extends StatefulWidget {
   final ViewModel viewModel;
-  const MenuButtons({super.key, required this.viewModel});
+  final AsyncSnapshot<DocumentSnapshot<Object?>> snapshot;
+  const MenuButtons({super.key, required this.viewModel, required this.snapshot});
 
   @override
   State<MenuButtons> createState() => _MenuButtonsState();
@@ -193,7 +194,12 @@ class _MenuButtonsState extends State<MenuButtons> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => QRCodePage(),
+                            builder: (context) => QRCodePage(
+                              viewModel: widget.viewModel,
+                              username: widget.snapshot.data?.get(FirebaseChatUser().username),
+                              imageUrl: widget.snapshot.data?.get(FirebaseChatUser().profileImageUrl),
+                              uid: widget.snapshot.data?.get(FirebaseChatUser().uid),
+                            ),
                           ),
                         );
                       }, icon: Icon(

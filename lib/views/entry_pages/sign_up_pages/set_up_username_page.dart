@@ -57,6 +57,7 @@ class _SetUpUsernamePageState extends State<SetUpUsernamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Util().sheebaYellow,
       appBar: AppBar(
           backgroundColor: Util().sheebaYellow,
@@ -74,9 +75,9 @@ class _SetUpUsernamePageState extends State<SetUpUsernamePage> {
                       padding: EdgeInsets.only(bottom: 15, top: 15),
                       child: Text('トップ画像（任意）'),
                     ),
-                    // トップ画像
+                    // プロフィール画像
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 40),
+                      padding: const EdgeInsets.only(bottom: 30),
                       child: GestureDetector(
                           child: CustomFileIcon(imageFile: widget.viewModel.imageFile, scale: 1,),
                           onTap: () {
@@ -117,7 +118,7 @@ class _SetUpUsernamePageState extends State<SetUpUsernamePage> {
                     ),
                     // 住所
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 50),
+                      padding: const EdgeInsets.only(bottom: 30),
                       child: DropdownButtonFormField(
                         // value: '年代を選択',
                         hint: Text('住所を選択してください'),
@@ -129,20 +130,19 @@ class _SetUpUsernamePageState extends State<SetUpUsernamePage> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 20),
-                      child: CustomButton(text: '次へ',
-                        buttonTap: !_isCheckButtonEnable() ? null : () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SetUpEmailPage(viewModel: widget.viewModel)
-                            ),
-                          );
-                        },
-                      )
+
+                    CustomButton(text: '次へ',
+                      buttonTap: !_isCheckButtonEnable() ? null : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SetUpEmailPage(viewModel: widget.viewModel)
+                          ),
+                        );
+                      },
                     ),
-                    Spacer(),
+
+                    const Spacer(),
                   ],
                 ),
                ),

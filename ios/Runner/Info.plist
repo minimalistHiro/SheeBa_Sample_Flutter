@@ -47,9 +47,7 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>QRコードをスキャンするために使用します</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>なぜか使用します</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>なぜか使用します</string>
+	<string>プロフィール画像の選別に使用します。</string>
 </dict>
 </plist>
