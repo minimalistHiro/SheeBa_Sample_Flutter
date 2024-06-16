@@ -10,7 +10,7 @@ import '../../view_model/view_model.dart';
 import '../app_components/components.dart';
 import '../app_components/custom_button.dart';
 import '../app_components/custom_dialog.dart';
-import '../app_components/custom_icon.dart';
+import '../app_components/custom_icon_image.dart';
 
 class UpdateProfileImagePage extends StatefulWidget {
   final ViewModel viewModel;
@@ -110,6 +110,7 @@ class _UpdateProfileImagePageState extends State<UpdateProfileImagePage> {
                                 });
                               }
                             },
+                          color: Colors.black,
                         )
                     ),
                     const Spacer(),

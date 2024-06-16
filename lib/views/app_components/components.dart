@@ -31,6 +31,7 @@ class ComTextField extends StatelessWidget {
             hintText: hintText
         ),
         onChanged: onChanged,
+        maxLength: 100,
       ),
     );
   }
@@ -57,6 +58,30 @@ class ComPasswordTextField extends StatelessWidget {
           ),
         ),
         onChanged: onChanged,
+        maxLength: 50,
+      ),
+    );
+  }
+}
+
+class ComTextBox extends StatelessWidget {
+  final String hintText;
+  final ValueChanged<String>? onChanged;
+  const ComTextBox({super.key, required this.hintText, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30),
+      child: TextField(
+        controller: null,
+        decoration: InputDecoration(
+          hintText: hintText,
+          border: const OutlineInputBorder(),
+        ),
+        onChanged: onChanged,
+        maxLines: 10,
+        maxLength: 500,
       ),
     );
   }

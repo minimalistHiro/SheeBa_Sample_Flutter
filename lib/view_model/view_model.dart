@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:sheeba_sample/model/chat_user.dart';
 import 'package:sheeba_sample/model/notification.dart';
 import 'package:sheeba_sample/util/firebase_constants.dart';
@@ -13,6 +12,7 @@ class ViewModel {
   Stream<DocumentSnapshot>? chatUserStream;
   File? imageFile;                  // 画像ファイル情報
   bool isLoading = false;           // リロードの有無
+  List<ChatUser> allUsers = [];     // 全ユーザー
 
   // DB
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -100,9 +100,11 @@ class ViewModel {
   /// 画像をFirebaseStorageに保存
   ///
   /// @param
+  /// - user ユーザー情報
   /// - doc ドキュメント
   /// @return なし
   Future<void> persistImage(User user, bool isPersist) async {
+    // TODO - doc取得する意味あるのか？
     final doc = _firestore
         .collection(FirebaseChatUser().users)
         .doc(user.uid);
@@ -164,6 +166,33 @@ class ViewModel {
       return docRef.snapshots();
     }
     return null;
+  }
+
+  /// 全ユーザー情報を取得
+  ///
+  /// @param なし
+  /// @return なし
+  Future<void> fetchAllUsers() async {
+    final collectionRef = _firestore.collection(FirebaseChatUser().users);
+    final querySnapshot = await collectionRef.get();
+    final queryDocSnapshot = querySnapshot.docs;
+
+    // 各ユーザー情報をallUsersに保存
+    for (final snapshot in queryDocSnapshot) {
+      final data = snapshot.data();
+      final String uid = snapshot.id;
+      final String email = data[FirebaseChatUser().email];
+      final String profileImageUrl = data[FirebaseChatUser().profileImageUrl];
+      final int point = data[FirebaseChatUser().point];
+      final String username = data[FirebaseChatUser().username];
+      final String age = data[FirebaseChatUser().age];
+      final String address = data[FirebaseChatUser().address];
+      final bool isStore = data[FirebaseChatUser().isStore];
+      final bool isOwner = data[FirebaseChatUser().isOwner];
+      final String os = data[FirebaseChatUser().os];
+      final user = ChatUser(uid, email, profileImageUrl, point, username, age, address, isStore, isOwner, os);
+      allUsers.add(user);
+    }
   }
 
   /// お知らせを取得

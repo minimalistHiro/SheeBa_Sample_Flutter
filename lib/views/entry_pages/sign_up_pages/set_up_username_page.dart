@@ -5,7 +5,7 @@ import 'package:sheeba_sample/model/chat_user.dart';
 import 'package:sheeba_sample/util/util.dart';
 import 'package:sheeba_sample/view_model/view_model.dart';
 import 'package:sheeba_sample/views/app_components/custom_button.dart';
-import 'package:sheeba_sample/views/app_components/custom_icon.dart';
+import 'package:sheeba_sample/views/app_components/custom_icon_image.dart';
 import 'package:sheeba_sample/views/entry_pages/sign_up_pages/set_up_email_page.dart';
 import '../../app_components/components.dart';
 
@@ -140,6 +140,7 @@ class _SetUpUsernamePageState extends State<SetUpUsernamePage> {
                           ),
                         );
                       },
+                      color: Colors.black,
                     ),
 
                     const Spacer(),

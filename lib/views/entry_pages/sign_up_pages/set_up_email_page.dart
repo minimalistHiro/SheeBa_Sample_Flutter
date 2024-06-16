@@ -117,6 +117,7 @@ class _SetUpEmailPageState extends State<SetUpEmailPage> {
                             });
                           }
                         },
+                      color: Colors.black,
                     ),
 
                     const Spacer(),

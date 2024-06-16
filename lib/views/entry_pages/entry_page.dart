@@ -68,6 +68,7 @@ class _EntryPageState extends State<EntryPage> {
                         ),
                       );
                     },
+                  color: Colors.black,
                 )
             ),
           ],

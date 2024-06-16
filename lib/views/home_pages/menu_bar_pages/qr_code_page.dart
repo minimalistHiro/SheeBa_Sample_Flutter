@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:sheeba_sample/views/app_components/custom_icon.dart';
+import 'package:sheeba_sample/views/app_components/custom_icon_image.dart';
 import '../../../view_model/view_model.dart';
 
 class QRCodePage extends StatefulWidget {

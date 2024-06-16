@@ -10,7 +10,7 @@ import 'package:sheeba_sample/views/account_pages/update_profileImage_page.dart'
 import 'package:sheeba_sample/views/account_pages/update_username_page.dart';
 import 'package:sheeba_sample/views/app_components/components.dart';
 import 'package:sheeba_sample/views/app_components/custom_dialog.dart';
-import 'package:sheeba_sample/views/app_components/custom_icon.dart';
+import 'package:sheeba_sample/views/app_components/custom_icon_image.dart';
 import 'package:sheeba_sample/views/entry_pages/entry_page.dart';
 import '../../view_model/view_model.dart';
 
@@ -112,6 +112,7 @@ class _AccountPageState extends State<AccountPage> {
               const ComListMenu(title: 'プライバシーポリシー', color: Colors.black, buttonTap: null),
               ComListMenu(title: 'ログアウト', color: Colors.red, buttonTap: () async {
                 CustomShowDoubleDialog(context, '', 'ログアウトしますか？', 'ログアウト', Colors.red, () async {
+                  Navigator.pop(context);
                   setState(() {
                     widget.viewModel.isLoading = true;
                   });

@@ -88,6 +88,7 @@ class _UpdateUsernamePageState extends State<UpdateUsernamePage> {
                                 });
                               }
                             },
+                          color: Colors.black,
                         )
                     ),
                     const Spacer(),

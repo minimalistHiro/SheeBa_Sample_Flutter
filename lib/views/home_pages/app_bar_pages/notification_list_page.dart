@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sheeba_sample/model/notification.dart';
 import 'package:sheeba_sample/views/app_components/components.dart';
 import 'package:sheeba_sample/views/app_components/custom_button.dart';
+import 'package:sheeba_sample/views/home_pages/app_bar_pages/notification_detail_page.dart';
 import '../../../view_model/view_model.dart';
 
 class NotificationListPage extends StatefulWidget {
@@ -31,17 +32,39 @@ class _NotificationListPageState extends State<NotificationListPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: ComAppBarText(text: 'お知らせ')
+            title: const ComAppBarText(text: 'お知らせ')
           ),
-          body: ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              final data = snapshot.data![index];
-              return ListTile(
-                title: Text(data.title),
-                subtitle: Text(data.text),
-              );
-            },
+          body: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: ListView.separated(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final data = snapshot.data![index];
+                return ListTile(
+                  title: Text(data.title,
+                    maxLines: 1,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(data.text, maxLines: 1,),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationDetailPage(
+                            viewModel: widget.viewModel,
+                            title: data.title,
+                            text: data.text,
+                            imageUrl: data.imageUrl,
+                            url: data.url),
+                      ),
+                    );
+                  },
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const Divider();
+              },
+            ),
           ),
         );
       }
