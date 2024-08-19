@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:js_util';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -227,7 +228,9 @@ class _QRScanPageState extends State<QRScanPage> {
         final bool isStore = data[FirebaseChatUser().isStore];
         final bool isOwner = data[FirebaseChatUser().isOwner];
         final String os = data[FirebaseChatUser().os];
-        fetchedUser = ChatUser(uid, email, profileImageUrl, point, username, age, address, isStore, isOwner, os);
+        // fetchedUser = ChatUser(uid, email, profileImageUrl, point, username, age, address, isStore, isOwner, os);
+        // TODO: - ChatUser改装後
+        fetchedUser = ChatUser(uid: uid, email: email, profileImageUrl: profileImageUrl, point: point, username: username, age: age, address: address, isStore: isStore, isOwner: isOwner, os: os);
       },
       onError: (e) {
         _isErrorScan = true;

@@ -127,7 +127,7 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                                   await persistNotification(user);
                                 }
                               }
-                              CustomShowSingleDialog(context, '', 'お知らせを送信しました。', null);
+                              CustomShowSingleDialog(context, '', 'お知らせを作成しました。', null);
                             } catch(e) {
                               CustomShowSingleDialog(context, '', e.toString(), null);
                             } finally {

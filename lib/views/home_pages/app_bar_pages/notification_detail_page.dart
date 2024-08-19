@@ -83,6 +83,7 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                           child: CustomWebImage(imageUrl: widget.imageUrl, scale: 2),
                         ),
 
+                        // 削除ボタン
                         if(snapshot.data?.get(FirebaseChatUser().isOwner))
                         Padding(
                           padding: const EdgeInsets.only(bottom: 70),

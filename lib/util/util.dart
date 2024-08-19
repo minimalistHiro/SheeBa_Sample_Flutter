@@ -13,18 +13,18 @@ class Util {
   final Color sheebaDarkGreen = Color(0xff61a746);
   final Color sheebaBrown = Color(0xffad7045);
 
-
   // デフォルト値
   final defaultChatUser = ChatUser(
-    '',                     // uid
-    'sheeba@gmail.com',     // email
-    '',                     // profileImageUrl
-    0,                      // point
-    '芝太郎',                // username
-    '20代',                  // age
-    '川口市（芝が付く地域）',    // address
-    false,                  // isStore
-    false,                  // isOwner
-    'iOS',                  // os
+    uid: '',
+    email: 'sheeba@gmail.com',
+    profileImageUrl: '',
+    point: 0,
+    username: '芝太郎',
+    age: '20代',
+    address: '川口市（芝が付く地域）',
+    isStore: false,
+    isOwner: false,
+    os: 'iOS',
   );
+
 }

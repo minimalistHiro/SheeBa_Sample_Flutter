@@ -1,29 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:sheeba_sample/util/firebase_constants.dart';
 
 class ChatUser {
-  ChatUser(
-      this.uid,
-      this.email,
-      this.profileImageUrl,
-      this.point,
-      this.username,
-      this.age,
-      this.address,
-      this.isStore,
-      this.isOwner,
-      this.os,
-      );
+  ChatUser({
+    required this.uid,
+    required this.email,
+    required this.profileImageUrl,
+    required this.point,
+    required this.username,
+    required this.age,
+    required this.address,
+    required this.isStore,
+    required this.isOwner,
+    required this.os,
+  });
 
-  String uid;
-  String email;
-  String profileImageUrl;
-  int point;
-  String username;
-  String age;
-  String address;
-  bool isStore;
-  bool isOwner;
-  String os;
+  final String uid;
+  final String email;
+  final String profileImageUrl;
+  final int point;
+  final String username;
+  final String age;
+  final String address;
+  final bool isStore;
+  final bool isOwner;
+  final String os;
+
+  factory ChatUser.fromMap(Map<String, dynamic> data) {
+    return ChatUser(
+        uid: data[FirebaseChatUser().uid],
+        email: data[FirebaseChatUser().email],
+        profileImageUrl: data[FirebaseChatUser().profileImageUrl],
+        point: data[FirebaseChatUser().point],
+        username: data[FirebaseChatUser().username],
+        age: data[FirebaseChatUser().age],
+        address: data[FirebaseChatUser().address],
+        isStore: data[FirebaseChatUser().isStore],
+        isOwner: data[FirebaseChatUser().isOwner],
+        os: data[FirebaseChatUser().os]);
+  }
 }
 
 List<DropdownMenuItem<String>>? ageItems = const [

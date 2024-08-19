@@ -1,8 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sheeba_sample/views/app_components/components.dart';
+import '../../../view_model/view_model.dart';
 
-class StoreGetPointPage extends StatelessWidget {
+class StoreGetPointPage extends StatefulWidget {
+  final ViewModel viewModel;
+  const StoreGetPointPage({super.key, required this.viewModel});
+
+  @override
+  State<StoreGetPointPage> createState() => _StoreGetPointPageState();
+}
+
+class _StoreGetPointPageState extends State<StoreGetPointPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

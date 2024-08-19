@@ -190,12 +190,29 @@ class ViewModel {
       final bool isStore = data[FirebaseChatUser().isStore];
       final bool isOwner = data[FirebaseChatUser().isOwner];
       final String os = data[FirebaseChatUser().os];
-      final user = ChatUser(uid, email, profileImageUrl, point, username, age, address, isStore, isOwner, os);
+      final user = ChatUser(uid: uid, email: email, profileImageUrl: profileImageUrl, point: point, username: username, age: age, address: address, isStore: isStore, isOwner: isOwner, os: os);
       allUsers.add(user);
     }
   }
 
-  /// お知らせを取得
+  /// 全ユーザー情報をポイントが高い順に並べて取得
+  ///
+  /// @param なし
+  /// @return 全ユーザー（ポイントが高い順）
+  Stream<List<ChatUser>>? fetchAllUsersOrderByMoney() {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final collectionRef = _firestore
+          .collection(FirebaseChatUser().users)
+          .orderBy(FirebaseChatUser().point, descending: true);
+      final stream = collectionRef.snapshots();
+      return stream.map((snapshot) =>
+          snapshot.docs.map((doc) => ChatUser.fromMap(doc.data())).toList());
+    }
+    return null;
+  }
+
+  /// 全お知らせを取得
   ///
   /// @param なし
   /// @return 全お知らせ

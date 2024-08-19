@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sheeba_sample/model/notification.dart';
 import 'package:sheeba_sample/views/app_components/components.dart';
-import 'package:sheeba_sample/views/app_components/custom_button.dart';
 import 'package:sheeba_sample/views/home_pages/app_bar_pages/notification_detail_page.dart';
 import '../../../view_model/view_model.dart';
 

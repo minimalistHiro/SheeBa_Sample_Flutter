@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sheeba_sample/util/util.dart';
 import 'package:sheeba_sample/views/home_pages/app_bar_pages/notification_list_page.dart';
-import 'package:sheeba_sample/views/home_pages/menu_bar_pages/money_transfer_page.dart';
+import 'package:sheeba_sample/views/home_pages/menu_bar_pages/money_transfer_pages/money_transfer_page.dart';
 import 'package:sheeba_sample/views/home_pages/menu_bar_pages/qr_code_page.dart';
 import 'package:sheeba_sample/views/home_pages/menu_bar_pages/ranking_page.dart';
 import 'package:sheeba_sample/views/home_pages/menu_bar_pages/store_get_point_page.dart';
@@ -224,7 +224,7 @@ class _MenuButtonsState extends State<MenuButtons> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MoneyTransferPage(),
+                            builder: (context) => MoneyTransferPage(viewModel: widget.viewModel),
                           ),
                         );
                       }, icon: Icon(
@@ -249,7 +249,7 @@ class _MenuButtonsState extends State<MenuButtons> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RankingPage(),
+                            builder: (context) => RankingPage(viewModel: widget.viewModel),
                           ),
                         );
                       }, icon: Icon(
@@ -274,7 +274,7 @@ class _MenuButtonsState extends State<MenuButtons> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => StoreGetPointPage(),
+                            builder: (context) => StoreGetPointPage(viewModel: widget.viewModel),
                           ),
                         );
                       }, icon: Icon(

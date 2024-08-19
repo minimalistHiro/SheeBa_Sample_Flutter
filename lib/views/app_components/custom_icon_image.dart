@@ -39,7 +39,7 @@ class _CustomFileIconState extends State<CustomFileIcon> {
               border: Border.all(width: 3),
             ),
           )
-              : const Icon(Icons.person, size: 70,)
+              : Icon(Icons.person, size: 70 * widget.scale,)
         ]
     );
   }
@@ -82,7 +82,7 @@ class _CustomWebIconState extends State<CustomWebIcon> {
               border: Border.all(width: 3),
             ),
           )
-              : const Icon(Icons.person, size: 70,)
+              : Icon(Icons.person, size: 70 * widget.scale,)
         ]
     );
   }
